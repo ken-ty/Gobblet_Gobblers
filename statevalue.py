@@ -1,4 +1,5 @@
-import randomimport tictactoe as tic
+import random
+import tictactoe as tic
     
   def mini_max( state ):
     """ミニマックスで状態の価値を計算する.
