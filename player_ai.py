@@ -18,7 +18,7 @@ def action( state, mode="Random" ):
     return random_action
 
 
-  elif mode == "MiniMax:
+  elif mode == "MiniMax":
     score       = -float( 'inf' ) #  行動の価値.
     best_score  = -float( 'inf' ) # 最も高い行動の価値.
     best_action = 0               # 最も価値の高い行動.
