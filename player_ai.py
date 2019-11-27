@@ -1,7 +1,7 @@
 import tictactoe as tic
 import statevalue as value
 
-def action( state, mode="Random" )
+def action( state, mode="Random" ):
   """現在の状態から思考ルーチンに沿って行動を生成する.
   Arg:
   state (tic.State): 現在の局面.
@@ -11,14 +11,14 @@ def action( state, mode="Random" )
               -  "MiniMax" 
   """
   
-  if mode = "Random":
+  if mode == "Random":
     # 合法手を取得し、その中からランダムに行動を選択する.
     legal_actions = state.legal_actions()
     random_action = legal_actions[random.randint(0, len(legal_actions)-1)]
     return random_action
 
 
-  elif mode = "MiniMax:
+  elif mode == "MiniMax:
     score       = -float( 'inf' ) #  行動の価値.
     best_score  = -float( 'inf' ) # 最も高い行動の価値.
     best_action = 0               # 最も価値の高い行動.
