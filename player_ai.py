@@ -18,7 +18,7 @@ def action( state, mode="Random" )
     random_action = legal_actions[random.randint(0, len(legal_actions)-1)]
     return random_action
     """
-    random_action = algo.random( state )
+    random_action = algo.random_action( state )
     return random_action
 
   elif mode = "MiniMax:
@@ -29,7 +29,7 @@ def action( state, mode="Random" )
     # 全ての合法手に対して、価値を計算.
     for action in state.legal_actions():
         # 価値を取得
-        score = algo.mini_max( state.next( action ) )
+        score = algo.mini_max_action( state.next( action ) )
         # 価値が高いなら更新
         if score > best_score:
             best_action = action
