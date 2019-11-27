@@ -1,5 +1,5 @@
 import tictactoe as tic # クラスStateを定義.
-impirt player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
+imprt player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
 import random
 
 # 3目並べの状態を保持するクラス"State"を初期化する。
