@@ -1,7 +1,0 @@
-def random_action(state):
-  """ランダムで行動選択
-
-  legal_actions()で合法手を取得し、その中からランダムに手を選びます.
-  """
-  legal_actions = state.legal_actions()
-  return legal_actions[random.randint(0, len(legal_actions)-1)]
