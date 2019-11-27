@@ -14,10 +14,10 @@ while ( state.is_done() ) :
     player *= -1
     
     # p1の行動選択
-    if player = 1:
+    if player == 1:
         action = ai.action( state, mode="Random" )
     # p2の行動選択
-    if player = -1:
+    if player == -1:
         action = ai.action( state, mode="MiniMax"   )
         
     # 行動を状態に反映させる。
