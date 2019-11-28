@@ -10,4 +10,5 @@ pythonでTicTacToeを作成.
 ## 実行方法
 1. TicTacToe_pyをダウンロード.
 1. phtyon実行環境で、main.pyを実行.
-1. main.pyを書き換えることで、MiniMaxプレイヤー同士のゲームを見ることができます!
+1. main.pyを書き換えることで、MiniMaxプレイヤー同士のゲームを見ることができます!  
+※ 書き換え済みverは、"players_are_MiniMax"ブランチからダウンロードできます.
