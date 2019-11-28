@@ -1,11 +1,11 @@
-import tictactoe as tic
+import gobblet_gobblers as game
 import statevalue as value
 import random
 
 def action( state, mode="Random" ):
   """現在の状態から思考ルーチンに沿って行動を生成する.
   Arg:
-  state (tic.State): 現在の局面.
+  state (game.State): 現在の局面.
   mode (str): 思考ルーチンの選択.
               思考ルーチンは以下から選択:
               -  "Random" (default)

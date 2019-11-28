@@ -5,12 +5,12 @@ modeの一覧:
     MiniMax: MiniMaxで計算した価値に基づいて行動選択
 """
 
-import tictactoe as tic # クラスStateを定義.
+import gobblet_gobblers as game # クラスStateを定義.
 import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
 import random
 
-# 3目並べの状態を保持するクラス"State"を初期化する。
-state = tic.State()
+# ゲームの状態を保持するクラス"State"を初期化する。
+state = game.State()
 
 # ファーストプレイヤーの抽選
 player = pow(-1, random.randint(0,1) )
