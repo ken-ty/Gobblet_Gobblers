@@ -26,7 +26,7 @@ def action( state, mode="Random" ):
     # 全ての合法手を取得し、最も価値が高い行動を選択する.
     for action in state.legal_actions():
         # 価値を取得
-        score = value.mini_max( state.next( action ) )
+        score = -value.mini_max( state.next( action ) )
         # 価値が高いなら更新
         if score > best_score:
             best_action = action
