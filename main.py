@@ -16,7 +16,7 @@ while ( state.is_done() != True ) :
     # p1の行動選択
     if player == 1:
         print("Random Player\n" )
-        action = ai.action( state, mode="Random" )
+        action = ai.action( state, mode="MiniMax" )
     # p2の行動選択
     if player == -1:
         print("MiniMax Player\n" )
