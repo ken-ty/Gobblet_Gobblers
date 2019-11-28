@@ -1,5 +1,5 @@
 import tictactoe as tic # クラスStateを定義.
-imprt player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
+import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
 import random
 
 # 3目並べの状態を保持するクラス"State"を初期化する。
@@ -15,9 +15,11 @@ while ( state.is_done() ) :
     
     # p1の行動選択
     if player == 1:
+        print("Random Player\n" )
         action = ai.action( state, mode="Random" )
     # p2の行動選択
     if player == -1:
+        print("MiniMax Player\n" )
         action = ai.action( state, mode="MiniMax"   )
         
     # 行動を状態に反映させる。
