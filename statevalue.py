@@ -1,5 +1,5 @@
 import random
-import tictactoe as tic
+import gobblet_gobblers as game
 
 def mini_max( state ):
     """ミニマックスで状態の価値を計算する.
