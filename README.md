@@ -1,5 +1,5 @@
-# TicTacToe_py
-pythonでTicTacToeを作成.
+# Gobblet Gobblers
+Gobblet GobblersのAiを作成.
 
 ## ファイル構成
 ├─ main.py       # シミュレーション.  
@@ -13,10 +13,10 @@ Anaconda Prompt を推奨します。
 
 ## 実行方法
 1. Anaconda https://www.anaconda.com/ をインストール.
-1. TicTacToe_pyをダウンロード.
+1. Gobblet Gobblersをダウンロード.
 1. Anaconda Prompt を実行
 1. Promptに"python "と入力. (行末のスペースを忘れずに!)
-1. ダウンロードしたTicTacToe_pyから、main.pyをAnaconda Promptにドラック&ドロップしてください.
+1. ダウンロードしたGobblet Gobblersから、main.pyをAnaconda Promptにドラック&ドロップしてください.
 1. Promptには、"phtyon [パス]/main.py"となっているはずです。そのままEnterで実行できます.
 
 1. main.pyを書き換えることで、MiniMaxプレイヤー同士のゲームを見ることができます!  
