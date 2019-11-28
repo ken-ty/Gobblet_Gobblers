@@ -25,9 +25,9 @@ class State:
     
     Args:
       my_pieces (list): 自分の石の場所
-      enemy_pieces (list): 敵の石の場所
-      my_toplayer_pieces (list): 盤に見えてる自分の石の場所 
-      enemy_toplayer_pieces (list): 盤に見えてる敵の石の場所 
+      enemy_pieces (list): 敵の駒の場所
+      my_toplayer_pieces (list): 盤に見えてる自分の駒の場所 
+      enemy_toplayer_pieces (list): 盤に見えてる敵の駒の場所 
       player (int): 先手は1, 後手は-1を入力
     """
     # 全ての駒の位置(0|1)
@@ -108,12 +108,18 @@ class State:
     次のstateを作成するために使う。
     例: state = State(state.next( action ))
     Args:
-      action (int): 次に置くマスを０～８で指定.
+      action ((int|None), int): 第一引数で動かす駒の位置を指定する。手駒ならNone,盤上なら0~26、次に置くマスを0~26で指定.
     Returns:
       (enemy_pieces, my_pieces, enemy_toplayer_pieces, my_toplayer_pieces, player) (State): 行動を反映させたStateを返す.
     """
     my_pieces = self.my_pieces.copy() # リストだからcopyを使用.
-    my_pieces[action] = 1
+    # 手駒から
+    if action[0] == None:
+      my_pieces[action[1]] = 1
+    # 盤上から
+    else:
+      my_pieces[action[0]] = 0
+      my_pieces[action[1]] = 1
     
     # toplayerの更新.
     my_toplayer_pieces    = [0] * 9
@@ -134,7 +140,55 @@ class State:
     Returns:
       actions: 合法手のリスト
     """
-    actions = []
+    # 取り除く候補、0より大きいなら取り除ける。
+    remove_candidates_actions = self.my_toplayer_pieces.copy()
+    # 取り除けるのは自分のtoplayerかつ他のマスが動かすマスより小さいとき、これは1の駒のみ.
+    for i in range(9)
+      if remove_candidates_actions[i] == 1:
+        not_put = 1
+        for i in range(9):
+          if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
+            not_put = 0
+            break;
+        if not_put:
+          remove_candidates_action[i] = 0:
+            
+    # 候補を0~26のマスに直す.
+    remove_actions = []
+    for i in range(9):
+      if remove_candidates_actions[i] >= 1:
+        remove_actions.append(i+9*(remove_candidates_actions[i]-1))
+
+    # 手駒を使い切ってなければ-1を加える.
+    num_hand_piece  = 6
+    for my_piece in my_pieces:
+      if my_piece != 0:
+        num_hand_piece -= 1
+    if num_hand_piece > 0:
+      remove_actions.append(-1)
+    
+    remove_actions.sort()
+    
+    # actionを作成する.
+    for remove_action in remove_actions:
+      if remove_action == -1:
+        手から動かすのを登録:
+      else:
+        盤で動かすのを登録:
+        
+      
+  
+    if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
+      remove_actions.append(i)
+    if self.my_toplayer_pieces[i] <= 1 and self.enemy_toplayer_pieces[i] <= 1:
+      actions.append(i+9)
+    if self.my_toplayer_pieces[i] <= 2 and self.enemy_toplayer_pieces[i] <= 2:
+      actions.append(i+18)
+    remove_actions.sort()
+    return actions
+  
+    # 取り除けるのは自分のtoplayerかつ他のマスが動かすマスより小さいとき.
+    remove_actions = []
     for i in range(9):
       if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
           actions.append(i)
@@ -142,7 +196,7 @@ class State:
           actions.append(i+9)
       if self.my_toplayer_pieces[i] <= 2 and self.enemy_toplayer_pieces[i] <= 2:
           actions.append(i+18)
-    actions.sort()
+    remove_actions.sort()
     return actions
   
   def is_first_player(self):
