@@ -9,7 +9,7 @@ import tictactoe as tic # クラスStateを定義.
 import player_ai as ai  # ゲームAI.ミニマックスによる行動.ランダムな行動.
 import random
 
-# 3目並べの状態を保持するクラス"State"を初期化する。
+# ゲームの状態を保持するクラス"State"を初期化する。
 state = tic.State()
 
 # ファーストプレイヤーの抽選
