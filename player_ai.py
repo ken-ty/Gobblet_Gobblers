@@ -1,5 +1,6 @@
 import tictactoe as tic
 import statevalue as value
+import random
 
 def action( state, mode="Random" ):
   """現在の状態から思考ルーチンに沿って行動を生成する.
