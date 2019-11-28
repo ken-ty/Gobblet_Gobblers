@@ -22,8 +22,8 @@ while ( state.is_done() ) :
         print("MiniMax Player\n" )
         action = ai.action( state, mode="MiniMax"   )
         
-    # 行動を状態に反映させる。
-    state = state.update( action )
+    # 行動を状態に反映させた次の状態に更新する。
+    state = state.next( action )
 
     # 表示
     print( state )
