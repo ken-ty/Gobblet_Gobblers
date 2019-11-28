@@ -1,4 +1,7 @@
 """Gobblet_Gobblersの作成
+盤面は、my_toplayer_piecesとenemy_toplayer_piecesで管理.
+また、my_piecesとenemy_piecesですべての駒の場所を管理している.
+手番プレイヤーはplayerで管理.
 """
 import random
 
@@ -6,9 +9,9 @@ class State:
   """盤面の状態
   Attributes:
     __init__(self, my_pieces, enemy_pieces)  : 初期化
-    piece_count(self, pieces): 石の数の取得
+    # delete piece_count(self, pieces): 石の数は数える必要がない.
     is_lose(self): 負けたかどうか
-    is_draw(self): 引き分けかどうか
+    # delete is_draw(self): 引き分けはない.
     is_done(self): ゲーム終了かどうか
     next(self, action): 次の状態の取得
     legal_actions(self): 合法手のリストの取得
@@ -16,33 +19,28 @@ class State:
     __str__(self): 文字列表示
   """
 
-  def __init__(self, my_pieces=None, enemy_pieces=None):
+  def __init__(self, my_pieces=None, enemy_pieces=None, my_toplayer_pieces=None, enemy_toplayer_pieces=None, player=1 ):
     """初期化
+    引数で与えられた石から現在の局面を作成する.
     
     Args:
       my_pieces (list): 自分の石の場所
       enemy_pieces (list): 敵の石の場所
+      my_toplayer_pieces (list): 盤に見えてる自分の石の場所 
+      enemy_toplayer_pieces (list): 盤に見えてる敵の石の場所 
+      player (int): 先手は1, 後手は-1を入力
     """
-    # 石の配置
-    self.my_pieces    = my_pieces    if my_pieces    != None else [0] * 9
-    self.enemy_pieces = enemy_pieces if enemy_pieces != None else [0] * 9
-  
-  def piece_count(self, pieces):
-    """石の数の取得
+    # 全ての駒の位置(0|1)
+    self.my_pieces    = my_pieces    if my_pieces    != None else [0] * 9 * 3
+    self.enemy_pieces = enemy_pieces if enemy_pieces != None else [0] * 9 * 3
     
-    自分の石でも敵の石でも数えられる.
-    Args:
-      pieces (list): 石の場所
+    # 盤面に見えてる駒の状態(0|1|2|3), 1から小さい順.
+    self.my_toplayer_pieces    = my_toplayer_pieces    if my_toplayer_pieces    != None else [0] * 9
+    self.enemy_toplayer_pieces = enemy_toplayer_pieces if enemy_toplayer_pieces != None else [0] * 9
     
-    Returns:
-      int : 石の数
-    """
-    count = 0
-    for i in pieces:
-      if i == 1:
-        count += 1
-    return count
-  
+    # 先手か後手か
+    self.player = player
+    
   def is_lose(self):
     """敗北判定
     Returns:
@@ -65,7 +63,7 @@ class State:
       """
       for k in range(3):
         # 範囲外または敵の石がないなら負けてない
-        if y < 0 or 2 < y or x < 0 or 2 < x or self.enemy_pieces[x+y*3] == 0:
+        if y < 0 or 2 < y or x < 0 or 2 < x or self.enemy_toplayer_pieces[x+y*3] == 0:
           return False
         # 次のマスの座標にする.
         x, y = x+dx, y+dy
@@ -91,26 +89,14 @@ class State:
 
     # 負けてないならFalse
     return False
-
-  def is_draw(self):
-    """引分判定
-    Returns:
-      bool: 引き分けならTrue, そうでないならFalse.
-    """
-    return self.piece_count(self.my_pieces) + self.piece_count(self.enemy_pieces) == 9
   
   def is_done(self):
     """ゲーム終了判定
     Returns:
       bool: ゲーム終了ならTrue, そうでないならFalse
     """
-    """debug:
-    if self.is_lose():
-      print("lose done")
-    if self.is_draw():
-      print("draw done")
-    """
-    return self.is_lose() or self.is_draw()
+    return self.is_lose()
+  
   def next(self, action):
     """次の状態の取得
     
@@ -124,12 +110,24 @@ class State:
     Args:
       action (int): 次に置くマスを０～８で指定.
     Returns:
-      (enemy_pieces, my_pieces) (State): 行動を反映させたenemy_pieces, my_piecesを返す.
+      (enemy_pieces, my_pieces, enemy_toplayer_pieces, my_toplayer_pieces, player) (State): 行動を反映させたStateを返す.
     """
     my_pieces = self.my_pieces.copy() # リストだからcopyを使用.
     my_pieces[action] = 1
+    
+    # toplayerの更新.
+    my_toplayer_pieces    = [0] * 9
+    enemy_toplayer_pieces = [0] * 9
+    for i in range(9):
+      for j in range(0, 3):
+      if self.my_pieces[i+9*j] != 0:
+        self.my_toplayer_pieces[i]    = j+1
+      elif self.enemy_pieces[i+9*j] != 0:
+        self.enemy_toplayer_pieces[i] = j+1
+      
     # enemy_piecesと更新したmy_piecesを入れ替えてStateを作成.
-    return State(self.enemy_pieces, my_pieces)
+    # playerはマイナスをかけて交代している.
+    return State(self.enemy_pieces, my_pieces, enemy_toplayer_pieces, my_toplayer_pieces, -player)
 
   def legal_actions(self):
     """合法手のリストの取得
@@ -138,17 +136,24 @@ class State:
     """
     actions = []
     for i in range(9):
-      if self.my_pieces[i] == 0 and self.enemy_pieces[i] == 0:
+      if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
           actions.append(i)
+      if self.my_toplayer_pieces[i] <= 1 and self.enemy_toplayer_pieces[i] <= 1:
+          actions.append(i+9)
+      if self.my_toplayer_pieces[i] <= 2 and self.enemy_toplayer_pieces[i] <= 2:
+          actions.append(i+18)
+    actions.sort()
     return actions
   
   def is_first_player(self):
-    """先手化どうか
+    """先手かどうか
     Returns:
       bool: 先手ならTrue, 後手ならFalse.
     """
-    # 読み込む順番か？要検証.
-    return self.piece_count(self.my_pieces) == self.piece_count(self.enemy_pieces)
+    if self.player == 1:
+      return True
+    else:
+      return False
   
   def __str__(self):
     """文字列表示
@@ -164,12 +169,12 @@ class State:
     ox = ('o', 'x') if self.is_first_player() else ('x', 'o')
     str = ''
     for i in range(9):
-      if self.my_pieces[i] == 1:
-        str += ox[0]
-      elif self.enemy_pieces[i] == 1:
-        str += ox[1]
+      if self.my_toplayer_pieces[i] != 0:
+        str += ox[0] + self.my_toplayer_pieces[i]
+      elif self.enemy_toplayer_pieces[i] != 0:
+        str += ox[1] + self.enemy_toplayer_pieces[i]
       else:
-        str += '-'
+        str += '--'
       if i % 3 == 2:
         str += '\n'
     return str
