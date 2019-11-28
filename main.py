@@ -34,5 +34,5 @@ while ( state.is_done() != True ) :
 
     # 表示
     print( state )
-    print("空白")
+    print("")
     
