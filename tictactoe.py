@@ -25,7 +25,7 @@ class State:
       enemy_pieces (list): 敵の石の場所
     """
     # 石の配置
-    self.my_pieces    = my_pieces    if my_pieces   != None else [0] * 9
+    self.my_pieces    = my_pieces    if my_pieces    != None else [0] * 9
     self.enemy_pieces = enemy_pieces if enemy_pieces != None else [0] * 9
   
   def piece_count(self, pieces):
@@ -80,7 +80,7 @@ class State:
     # 斜めを確認
     if is_comp(0, 0, 1, 1) or is_comp(0, 2, 1, -1):
       #デバッグ:
-      #print("ななめまけ")
+      #print("斜めまけ")
       return True
     # 縦,横を確認
     for i in range(3):
