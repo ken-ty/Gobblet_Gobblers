@@ -1,6 +1,15 @@
 # Gobblet Gobblers
 Gobblet GobblersのAiを作成.
 
+## What's "Gobblet Gobblers" ?
+
+日本国内の正規輸入代理店「すごろくや」の紹介ページ  
+https://sgrk.blog.fc2.com/blog-entry-3687.html  
+
+正規ルールと違う点として、
+持ち上げた際にできる3並びについては考慮してないです。  
+簡単のためです。今後対応します。  
+
 ## ファイル構成
 ├─ main.py              # シミュレーション.  
 ├─ player_ai.py         # ゲームAI.指定したアルゴリズムで行動を決定.  
