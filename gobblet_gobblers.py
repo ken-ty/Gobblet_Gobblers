@@ -60,7 +60,7 @@ class State:
     hand_my_pieces = []
     for layer in range(3):
       pieces_size = layer + 1
-      use_my_pieces = my_pieces[9*layer : 9*layer + 9]
+      use_my_pieces = self.my_pieces[9*layer : 9*layer + 9]
       num_not_use_my_pieces = 2 - use_my_pieces.count(pieces_size)
       for num in num_not_use_my_pieces:       
         hand_my_pieces.append(pieces_size)
