@@ -208,7 +208,7 @@ class State:
       # 手駒からでも、盤上の駒でも、置けるかの処理は変わらない。(動かすとき、自分のいたマスには行けないので、取り除いて比較する必要がない.)
       # 単純におけるかの確認.
       for plane_axis in range(9):
-        for piece_size in range(SMALL:LARGE+1):
+        for piece_size in range(SMALL, LARGE+1):
           if self.my_toplayer_pieces[plane_axis] < piece_size and self.enemy_toplayer_pieces[plane_axis] < piece_size:
             layer = piece_size - 1
             put_action = plane_axis + 9 * layer
