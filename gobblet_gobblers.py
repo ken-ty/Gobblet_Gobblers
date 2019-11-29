@@ -37,48 +37,66 @@ class State:
     # 先手か後手か
     self.player = player
     
-    # 盤面に見えてる駒の状態(0|1|2|3), 1から小さい順.
+    # piecesizeの定義
+    VOID   = 0
+    SMALL  = 1
+    MIDIUM = 2
+    LARGE  = 3
+    
+    # 盤面に見えてる駒の状態(0|1|2|3), piecesize = 0, 1, 2, 3  (void, small, midium, large).
     my_toplayer_pieces    = [0] * 9
     enemy_toplayer_pieces = [0] * 9
-    for i in range(9):
-      for j in range(0, 3):
-      if self.my_pieces[i+9*j] != 0:
-        my_toplayer_pieces[i]    = j+1
-      elif self.enemy_pieces[i+9*j] != 0:
-        enemy_toplayer_pieces[i] = j+1
+    for plane_axis in range(9):
+      for layer in range(3):
+        pieces_size = layer + 1
+        if self.my_pieces[plane_axis+9*layer] != VOID:
+          my_toplayer_pieces[plane_axis]    = pieces_size
+        elif self.enemy_pieces[plane_axis+9*layer] != VOID:
+          enemy_toplayer_pieces[plane_axis] = pieces_size
     self.my_toplayer_pieces    = my_toplayer_pieces
     self.enemy_toplayer_pieces = enemy_toplayer_pieces
     
     # 手駒(1|2|3)のリスト.
     hand_my_pieces = []
-    for i in range(3):
-      num_use_my_pieces = my_pieces[9*(i-1):9*i].count(i+1)
-      num_not_use_my_pieces = 2 - num_use_my_pieces
+    for layer in range(3):
+      pieces_size = layer + 1
+      use_my_pieces = my_pieces[9*layer : 9*layer + 9]
+      num_not_use_my_pieces = 2 - use_my_pieces.count(pieces_size)
       for num in num_not_use_my_pieces:       
-        hand_my_pieces.append(i+1)
+        hand_my_pieces.append(pieces_size)
     self.hand_my_pieces = hand_my_pieces
     
     # 盤上の動かせる駒(0~26, 手駒から出せるなら-1も加える.)
+    # candidatesはtoplayerの1~3で駒情報を保持.
+    # SMALLの駒は、移動先がないと動かせないが、ここでのmoveとは、toplayer or hand に属しているということである.
     can_move_my_pieces = None
     # 0(駒なし),2,3は、toplayerをコピーでOK.
     can_move_my_pieces_candidates = self.my_toplayer_pieces.copy()
+    """
     # 1の駒のみ, 移動先のマスがあるか確認.
-    for i in range(9):
-      if can_move_my_pieces_candidates[i] == 1:
+    for plane_axis in range(9):
+      if can_move_my_pieces_candidates[plane_axis] == SMALL:
         not_put = 1
-        for j in range(9):
-          if self.my_toplayer_pieces[j] == 0 and self.enemy_toplayer_pieces[j] == 0:
+        for plane_axis_i in range(9):
+          if self.my_toplayer_pieces[plane_axis_i] == VOID and self.enemy_toplayer_pieces[plane_axis_i] == VOID:
             not_put = 0
             break;
         if not_put:
-          can_move_my_pieces_candidates[i] = 0:
+          can_move_my_pieces_candidates[plane_axis] = 0:
+    """
     # 候補を0~26のマスに直す.
-    for i in range(9):
-      if can_move_my_pieces_candidates[i] > 0:
-        can_move_my_pieces.append(i+9*(can_move_my_pieces_candidates[i] -1))
+    for plane_axis in range(9):
+      if can_move_my_pieces_candidates[plane_axis] != VOID:
+        pieces_size = can_move_my_pieces_candidates[plane_axis]
+        layer = pieces_size -1
+        can_move_my_pieces.append(plane_axis+9*layer)
     # 手駒を使い切ってなければ-1を加える.
-    if len(self.hand_my_pieces) < 6
-      can_move_my_pieces.append.append(-1)
+    NUM_MAX_HAND_PIECES = 6
+    if len(self.hand_my_pieces) < NUM_MAX_HAND_PIECES
+      """
+      # small駒の判定はまだなし.後でここに実装.
+      """
+      can_move_my_pieces.append(-1)
     # ソートする.
     can_move_my_pieces.sort()
     
@@ -104,7 +122,7 @@ class State:
       """
       for k in range(3):
         # 範囲外または敵の石がないなら負けてない
-        if y < 0 or 2 < y or x < 0 or 2 < x or self.enemy_toplayer_pieces[x+y*3] == 0:
+        if y < 0 or 2 < y or x < 0 or 2 < x or self.enemy_toplayer_pieces[x+y*3] == VOID:
           return False
         # 次のマスの座標にする.
         x, y = x+dx, y+dy
@@ -117,13 +135,13 @@ class State:
       #print("斜めまけ")
       return True
     # 縦,横を確認
-    for i in range(3):
-      if is_comp(0, i, 1, 0):
+    for y in range(3):
+      if is_comp(0, y, 1, 0):
         #デバッグ:
         #print("横まけ")
         return True
-    for i in range(3):
-      if is_comp(i, 0, 0, 1):
+    for x in range(3):
+      if is_comp(x, 0, 0, 1):
         #デバッグ:
         #print("縦まけ")
         return True
@@ -141,7 +159,7 @@ class State:
   def next(self, action):
     """次の状態の取得
     
-    現在の状態stateに選択した行動actionを反映した、
+    現在の状態stateに選択した2つの行動actionを反映した、
     新しいStateを作成する。
     新しい局面では手番が入れ替わるため、
     my_piecesとenemy_piecesの返す順序を交換している。
@@ -149,97 +167,55 @@ class State:
     次のstateを作成するために使う。
     例: state = State(state.next( action ))
     Args:
-      action ((int|None), int): 第一引数で動かす駒の位置を指定する。手駒ならNone,盤上なら0~26、次に置くマスを0~26で指定.
+      action (int, int): 第一引数で動かす駒の位置を指定する。手駒なら-1,盤上なら0~26、次に置くマスを0~26で指定.
     Returns:
-      (enemy_pieces, my_pieces, enemy_toplayer_pieces, my_toplayer_pieces, player) (State): 行動を反映させたStateを返す.
+      (enemy_pieces, my_pieces,player) (State): 行動を反映させたStateを返す.
     """
-    my_pieces = self.my_pieces.copy() # リストだからcopyを使用.
-    # 手駒から
-    if action[0] == None:
-      my_pieces[action[1]] = 1
-    # 盤上から
-    else:
-      my_pieces[action[0]] = 0
-      my_pieces[action[1]] = 1
     
-    # toplayerの更新.
-    my_toplayer_pieces    = [0] * 9
-    enemy_toplayer_pieces = [0] * 9
-    for i in range(9):
-      for j in range(0, 3):
-      if self.my_pieces[i+9*j] != 0:
-        self.my_toplayer_pieces[i]    = j+1
-      elif self.enemy_pieces[i+9*j] != 0:
-        self.enemy_toplayer_pieces[i] = j+1
+    # my_piecesの更新.
+    my_pieces = self.my_pieces.copy() # リストだからcopyを使用.
+    remove_action = action[0]
+    put_action    = action[1]
+    # 手駒からなら置くだけ.
+    if remove_action == -1:
+      my_pieces[put_action]    = 1
+    # 盤上からなら取り除いてから置く.
+    else:
+      my_pieces[remove_action] = 0
+      my_pieces[put_action]    = 1
       
     # enemy_piecesと更新したmy_piecesを入れ替えてStateを作成.
     # playerはマイナスをかけて交代している.
-    return State(self.enemy_pieces, my_pieces, enemy_toplayer_pieces, my_toplayer_pieces, -player)
+    return State(self.enemy_pieces, my_pieces, -self.player)
 
   def legal_actions(self):
     """合法手のリストの取得
+    初めに、remove_actionsを作成する.
+    そこから、remove_actionとput_actionという一連の単位actionを作成する.
+    すべてのactionをリスト化し、actionsとして返す.
     Returns:
-      actions: 合法手のリスト
+      actions: 合法手のリスト, list (remove_action, put_action)
     """
-    # 取り除く候補、0より大きいなら取り除ける。
-    remove_candidates_actions = self.my_toplayer_pieces.copy()
-    # 取り除けるのは自分のtoplayerかつ他のマスが動かすマスより小さいとき、これは1の駒のみ.
-    for i in range(9)
-      if remove_candidates_actions[i] == 1:
-        not_put = 1
-        for i in range(9):
-          if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
-            not_put = 0
-            break;
-        if not_put:
-          remove_candidates_action[i] = 0:
-            
-    # 候補を0~26のマスに直す.
-    remove_actions = []
-    for i in range(9):
-      if remove_candidates_actions[i] >= 1:
-        remove_actions.append(i+9*(remove_candidates_actions[i]-1))
-
-    # 手駒を使い切ってなければ-1を加える.
-    num_hand_piece  = 6
-    for my_piece in my_pieces:
-      if my_piece != 0:
-        num_hand_piece -= 1
-    if num_hand_piece > 0:
-      remove_actions.append(-1)
+    """頑張る
+    TODO: actionのさくせい
+    action (int, int): 第一引数で動かす駒の位置を指定する。手駒なら-1,盤上なら0~26、次に置くマスを0~26で指定.
+    # 全てのcan_move_my_piecesに対して駒を動かす合法手を考える.
     
-    remove_actions.sort()
-    
-    # actionを作成する.
-    for remove_action in remove_actions:
-      if remove_action == -1:
-        手から動かすのを登録:
-      else:
-        盤で動かすのを登録:
-        
-      
-  
-    if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
-      remove_actions.append(i)
-    if self.my_toplayer_pieces[i] <= 1 and self.enemy_toplayer_pieces[i] <= 1:
-      actions.append(i+9)
-    if self.my_toplayer_pieces[i] <= 2 and self.enemy_toplayer_pieces[i] <= 2:
-      actions.append(i+18)
-    remove_actions.sort()
+    """
+    # 全てのcan_move_my_piecesに対して駒を動かす合法手を考える.
+    actions_cnt = 0
+    for remove_action in can_move_my_pieces:
+      # 手駒からでも、盤上の駒でも、置けるかの処理は変わらない。(動かすとき、自分のいたマスには行けないので、取り除いて比較する必要がない.)
+      # 単純におけるかの確認.
+      for plane_axis in range(9):
+        for piece_size in range(SMALL:LARGE+1):
+          if self.my_toplayer_pieces[plane_axis] < piece_size and self.enemy_toplayer_pieces[plane_axis] < piece_size:
+            layer = piece_size - 1
+            put_action = plane_axis + 9 * layer
+            actions[actions_cnt] = remove_action, put_actions
+            actions_cnt += 1
     return actions
-  
-    # 取り除けるのは自分のtoplayerかつ他のマスが動かすマスより小さいとき.
-    remove_actions = []
-    for i in range(9):
-      if self.my_toplayer_pieces[i] == 0 and self.enemy_toplayer_pieces[i] == 0:
-          actions.append(i)
-      if self.my_toplayer_pieces[i] <= 1 and self.enemy_toplayer_pieces[i] <= 1:
-          actions.append(i+9)
-      if self.my_toplayer_pieces[i] <= 2 and self.enemy_toplayer_pieces[i] <= 2:
-          actions.append(i+18)
-    remove_actions.sort()
-    return actions
-  
+ 
   def is_first_player(self):
     """先手かどうか
     Returns:
