@@ -92,7 +92,7 @@ class State:
         can_move_my_pieces.append(plane_axis+9*layer)
     # 手駒を使い切ってなければ-1を加える.
     NUM_MAX_HAND_PIECES = 6
-    if len(self.hand_my_pieces) < NUM_MAX_HAND_PIECES
+    if len(self.hand_my_pieces) < NUM_MAX_HAND_PIECES:
       """
       # small駒の判定はまだなし.後でここに実装.
       """
