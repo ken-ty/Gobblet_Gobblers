@@ -4,6 +4,7 @@
 手番プレイヤーはplayerで管理.
 """
 import random
+import logging
 
 class State:
   """盤面の状態
@@ -62,7 +63,7 @@ class State:
       pieces_size = layer + 1
       use_my_pieces = self.my_pieces[9*layer : 9*layer + 9]
       num_not_use_my_pieces = 2 - use_my_pieces.count(pieces_size)
-      for num in num_not_use_my_pieces:       
+      for i in range(num_not_use_my_pieces):       
         hand_my_pieces.append(pieces_size)
     self.hand_my_pieces = hand_my_pieces
     
@@ -72,18 +73,6 @@ class State:
     can_move_my_pieces = None
     # 0(駒なし),2,3は、toplayerをコピーでOK.
     can_move_my_pieces_candidates = self.my_toplayer_pieces.copy()
-    """
-    # 1の駒のみ, 移動先のマスがあるか確認.
-    for plane_axis in range(9):
-      if can_move_my_pieces_candidates[plane_axis] == SMALL:
-        not_put = 1
-        for plane_axis_i in range(9):
-          if self.my_toplayer_pieces[plane_axis_i] == VOID and self.enemy_toplayer_pieces[plane_axis_i] == VOID:
-            not_put = 0
-            break;
-        if not_put:
-          can_move_my_pieces_candidates[plane_axis] = 0:
-    """
     # 候補を0~26のマスに直す.
     for plane_axis in range(9):
       if can_move_my_pieces_candidates[plane_axis] != VOID:
@@ -98,7 +87,8 @@ class State:
       """
       can_move_my_pieces.append(-1)
     # ソートする.
-    can_move_my_pieces.sort()
+    # ソートしない（笑）. 後で実装する
+    # sorted(can_move_my_pieces)
     
   def is_lose(self):
     """敗北判定
@@ -250,3 +240,4 @@ class State:
         str += '\n'
     return str
     
+
