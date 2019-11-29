@@ -6,6 +6,25 @@
 import random
 import logging
 
+class Action:
+  """アクション
+    listにする場合は、hoge_actionsと命名します。
+  """
+  def __init__(self, before_put_position, put_position):
+    """
+    Args:
+      before_put_position (int): 動かす駒の元の位置.-1, 0~26で指定.手駒からは-1.
+      put_action (int): 駒を動かす先の位置.0~26で指定.
+    """
+    self.before_put_position = before_put_position
+    self.put_position        = put_position
+    
+  def before_put_position(self):
+    return self.before_put_position
+  
+  def _put_position(self):
+    return self.put_position
+
 class State:
   """盤面の状態
   Attributes:
@@ -110,6 +129,7 @@ class State:
       Returns:
         bool: 3並びならTrue, そうでないならFalse.
       """
+      VOID   = 0
       for k in range(3):
         # 範囲外または敵の石がないなら負けてない
         if y < 0 or 2 < y or x < 0 or 2 < x or self.enemy_toplayer_pieces[x+y*3] == VOID:
@@ -157,15 +177,15 @@ class State:
     次のstateを作成するために使う。
     例: state = State(state.next( action ))
     Args:
-      action (int, int): 第一引数で動かす駒の位置を指定する。手駒なら-1,盤上なら0~26、次に置くマスを0~26で指定.
+      action (Action): 行動です.
     Returns:
       (enemy_pieces, my_pieces,player) (State): 行動を反映させたStateを返す.
     """
     
     # my_piecesの更新.
     my_pieces = self.my_pieces.copy() # リストだからcopyを使用.
-    remove_action = action[0]
-    put_action    = action[1]
+    remove_action = action.before_put_position()
+    put_action    = action.put_position()
     # 手駒からなら置くだけ.
     if remove_action == -1:
       my_pieces[put_action]    = 1
