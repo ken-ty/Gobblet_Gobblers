@@ -19,7 +19,9 @@ def action( state, mode="Random" ):
     legal_actions = state.legal_actions()
     random_action = legal_actions[random.randint(0, len(legal_actions))]
     return random_action
-  
+  # MiniMaxを使うなら消してコメントアウトを解除する.
+  else:
+    print("error: mode not found.\n")
   """
   elif mode == "MiniMax":
     score       = -float( 'inf' ) #  行動の価値.
@@ -36,6 +38,6 @@ def action( state, mode="Random" ):
             best_score  = score
     mini_max_action = best_action
     return mini_max_action
-  """
   else:
     print("error: mode not found.\n")
+  """
