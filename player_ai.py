@@ -5,20 +5,22 @@ import random
 def action( state, mode="Random" ):
   """現在の状態から思考ルーチンに沿って行動を生成する.
   Arg:
-  state (game.State): 現在の局面.
-  mode (str): 思考ルーチンの選択.
-              思考ルーチンは以下から選択:
-              -  "Random" (default)
-              -  "MiniMax" 
+    state (game.State): 現在の局面.
+    mode (str): 思考ルーチンの選択.
+                思考ルーチンは以下から選択:
+                -  "Random" (default)
+                -  "MiniMax" 
+  Return:
+    random_action (actions): list (remove_action, put_action). 手駒ならremove_actionは-1.
   """
   
   if mode == "Random":
     # 合法手を取得し、その中からランダムに行動を選択する.
     legal_actions = state.legal_actions()
-    random_action = legal_actions[random.randint(0, len(legal_actions)-1)]
+    random_action = legal_actions[random.randint(0, len(legal_actions))]
     return random_action
-
-
+  
+  """
   elif mode == "MiniMax":
     score       = -float( 'inf' ) #  行動の価値.
     best_score  = -float( 'inf' ) # 最も高い行動の価値.
@@ -34,6 +36,6 @@ def action( state, mode="Random" ):
             best_score  = score
     mini_max_action = best_action
     return mini_max_action
-  
+  """
   else:
     print("error: mode not found.\n")
