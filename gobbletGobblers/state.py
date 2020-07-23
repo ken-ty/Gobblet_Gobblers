@@ -1,7 +1,10 @@
 # coding=utf-8
-def hoge():
-    return 0
 
 
 class State:
-    pass
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def encode():
+        return 1
