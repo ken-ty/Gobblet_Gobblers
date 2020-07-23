@@ -1,11 +1,17 @@
 # coding=utf-8
 import numpy as np
+import gobbletGobblers.bitExpression as be
 
 
 class State:
-    def __init__(self, black=None, white=None):
-        self.black = black if black is not None else np.uint32(0x000000000)
-        self.white = white if white is not None else np.uint32(0x000000000)
+    """
+    :arg
+        - black(unit32) 00000 A1LA1MA1SB1LB1MB1S ... C3S 盤面のblackコマを表すビット。上位5桁は使用しない。
+        - white(unit32) 00000 A1LA1MA1SB1LB1MB1S ... C3S 盤面のwhiteコマを表すビット。上位5桁は使用しない。
 
-    def encode(self):
-        return "hoge"
+    """
+
+    def __init__(self, black=None, white=None):
+        self.black = black if black is not None else be.EMPTY
+        self.white = white if white is not None else be.EMPTY
+
