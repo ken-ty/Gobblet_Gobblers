@@ -5,6 +5,5 @@ class State:
     def __init__(self):
         pass
 
-    @staticmethod
-    def encode():
-        return 1
+    def encode(self):
+        return "hoge"

@@ -1,11 +1,13 @@
 import unittest
+import gobbletGobblers.state
 
 
 class TestState(unittest.TestCase):
     def test_encode(self):
+        state = gobbletGobblers.state.State()
         val = 10
-        expect = "10"
-        actual = State.encode(val)
+        expect = "hoge"
+        actual = state.encode()
         self.assertEqual(expect, actual)
 
 
