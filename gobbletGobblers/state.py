@@ -3,6 +3,11 @@ import numpy as np
 import gobbletGobblers.bitExpression as be
 
 
+def encode(black, white):
+
+    return np.uint32(be.EMPTY),
+
+
 class State:
     """
     :arg
@@ -14,4 +19,7 @@ class State:
     def __init__(self, black=None, white=None):
         self.black = black if black is not None else be.EMPTY
         self.white = white if white is not None else be.EMPTY
+
+
+
 
